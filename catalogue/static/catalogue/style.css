@@ -1,0 +1,176 @@
+body {
+	margin: 0;
+	font-family: 'Roboto', sans-serif;
+}
+
+header {
+	height: 40px;
+	background-color: #ffb229;
+}
+
+nav {
+	width: 300px;
+}
+
+p, hr {
+	margin: 0;
+}
+
+a {
+	color: black;
+	text-decoration: none;
+}
+
+button {
+	font-size: 16px;
+}
+
+input, textarea {
+	margin-bottom: 10px;
+}
+
+.center {
+	margin: auto;
+}
+
+.flex {
+	display: flex;
+}
+
+.column {
+	flex-direction: column;
+}
+
+.space-between {
+	justify-content: space-between;
+}
+
+.align-items-center {
+	align-items: center;
+}
+
+.flex-wrap {
+	flex-wrap: wrap;
+}
+
+.justify-content {
+	justify-content: center;
+}
+
+.headline {
+	font-size: 56px;
+	line-height: 75px;
+	margin: 0;
+}
+
+.caption {
+	font-size: 14px;
+	line-height: 16px;
+}
+
+.title {
+	font-weight: 700;
+    font-size: 26px;
+}
+
+.subtitle {
+    font-size: 20px;
+	font-weight: 400;
+}
+
+.usual_text {
+	font-size: 16px;
+}
+
+.product {
+	width: 25%;
+	border: 1px solid #3f3f3f;
+}
+
+.product_info {
+	padding: 0 20px;
+}
+
+.pr_img {
+	width: 100%;
+}
+
+.pr_price {
+	margin-top: 8px;
+	margin-right: 8px;
+    margin-bottom: 2px;
+}
+
+.primary_button {
+	background: #fce000;
+	padding: 8px 12px;
+    width: auto;
+	border: 0;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.change_amount {
+	width: 100px;
+	margin-right: 12px;
+}
+
+.add_button {
+	width: 24px;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 26px;
+    color: #21201f;
+	background-color: white;
+	cursor: pointer;
+    border-radius: 4px;
+	border: 0;
+}
+
+.absent {
+	display: none;
+}
+
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 1349px;
+}
+
+.sticky + .content {
+  padding-top: 60px;
+}
+
+.order {
+	border: 1px solid #3f3f3f;
+	width: 75%;
+	margin-top: 10px;
+	padding-bottom: 2px;
+}
+
+#logo {
+	margin-left: 60px;
+}
+
+#heroSection {
+	color: white;
+	background-image: url('images/heroimg.jpg');
+	text-align: center;
+	height: 600px;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	justify-content: center;
+}
+
+#down-arrow {
+	margin-top: 30px;
+}
+
+#gallery {
+	padding: 0 120px;
+	margin-bottom: 120px;
+	gap: 32px;
+}

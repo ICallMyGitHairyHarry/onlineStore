@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE>
+<html>
+<head>
+	<title>Оформление заказа</title>
+
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="{% static 'catalogue/style.css' %}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="flex space-between caption align-items-center" id="hdr">
+		<a href="{% url 'catalogue:index' %}" id="logo" >Сладости и десерты</a>
+		<nav class="flex space-between" style="margin-right: 60px;">
+			<a href="{% url 'basket:basket' %}" class="navLink">Корзина</a>
+			<a href="{% url 'userProfile:userProfile' %}" class="navLink">Личный кабинет</a>
+			{% if user.is_authenticated %} <p> {{ user.first_name }} {{ user.last_name }} </p>
+            {% else %} <a href="{% url 'login' %}" class="navLink">Войти</a>
+            {% endif %}
+		</nav>
+	</header>
+
+    <h1 class="headline" style="margin-left: 100px">Оформление заказа</h1>
+
+    <div style="margin-left: 100px">
+        <h2>Данные покупателя</h2>
+        {% if user.is_authenticated %}
+            <div>
+                <p>Имя: {{ user.first_name }}</p>
+                <p>Фамилия: {{ user.last_name }}</p>
+                <p>Почта: {{ user.email }}</p>
+                <p>Телефон: {{ user.customer.phone }}</p>
+                <p>Адрес: {{ user.customer.district }} район, улица {{ user.customer.street }}, дом {{ user.customer.house }},
+                корпус {{ user.customer.corp }}, кв.{{ user.customer.flat }}, {{ user.customer.p_index }} </p>
+                <a href="{% url 'basket:create_order' %}">
+                    <button class="primary_button"> Оформить заказ </button>
+                </a>
+            </div>
+        {% else %}
+            <p style="margin-bottom: 10px;">Заполните данные для оформления заказа или <a href="{% url 'login' %}" style="text-decoration: underline">
+            авторизуйтесь</a>, чтобы они заполнились автоматически</p>
+            <form action="{% url 'basket:create_order' %}" method="POST">
+                {% csrf_token %}
+                <label for="login">E-mail:<br></label>
+			    <input name="login" id="login" type="email" size="20" maxlength="50" required >
+                <br>
+                <label for="last_name">Фамилия:<br></label>
+                <input name="last_name" id="last_name" type="text" size="20" maxlength="30" required onchange = "correct_field('last_name')" >
+                <br>
+                <label for="first_name">Имя:<br></label>
+                <input name="first_name" id="first_name" type="text" size="20" maxlength="30" required  onchange = "correct_field('first_name')">
+                <br>
+                <label for="phone">Телефон:<br></label>
+                <input name="phone" id="phone" type="text" size="20" maxlength="11" >
+                <br>
+                <h3 style="margin: 0 0 10px;">Адрес</h3>
+                <label for="district">Район:<br></label>
+                <input name="district" id="district" type="text" size="20" maxlength="30" required  onchange = "correct_field('district')">
+                <br>
+                <label for="street">Улица:<br></label>
+                <input name="street" id="street" type="text" size="20" maxlength="30" required  onchange = "correct_field('street')">
+                <br>
+                <label for="house">Дом:<br></label>
+                <input name="house" id="house" type="number" size="20" required >
+                <br>
+                <label for="corp">Корпус:<br></label>
+                <input name="corp" id="corp" type="number" size="20" >
+                <br>
+                <label for="flat">Квартира:<br></label>
+                <input name="flat" id="flat" type="number" size="20" required >
+                <br>
+                <label for="p_index">Почтовый индекс:<br></label>
+                <input name="p_index" id="p_index" type="number" size="20" required >
+                <br>
+                <input class="primary_button" style="font-size: 16px" type="submit" value="Оформить заказ" />
+            </form>
+        {% endif %}
+    </div>
+
+
+<script type="text/javascript" src="{% static 'basket/script.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Каталог</title>
+
+	<link rel="stylesheet" href="{% static 'catalogue/style.css' %}">
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="flex space-between caption align-items-center" id="hdr">
+		<a href="{% url 'catalogue:index' %}" id="logo" >Сладости и десерты</a>
+		<nav class="flex space-between" style="margin-right: 60px;">
+			<a href="{% url 'basket:basket' %}" class="navLink">Корзина</a>
+			<a href="{% url 'userProfile:userProfile' %}" class="navLink">Личный кабинет</a>
+			{% if user.is_authenticated %} <p> {{ user.first_name }} {{ user.last_name }} </p>
+            {% else %} <a href="{% url 'login' %}" class="navLink">Войти</a>
+            {% endif %}
+		</nav>
+	</header>
+
+    <div id="heroSection">
+        <h1 class="headline">Удивительные сочетания вкусов</h1>
+        <img src="{% static 'catalogue/vectors/down-arrow-big.svg' %}" alt="image" id="down-arrow">
+	</div>
+    <h1 class="headline" style="text-align: center; margin: 120px 0 40px">Каталог</h1>
+    <div id="gallery" class="flex flex-wrap justify-content">
+        {% if products_list %}
+            {% for product in products_list %}
+                <div class="product">
+                    <a href="{% url 'catalogue:product' product.id %}">
+                        {% if product.img %}
+                        <img src="{{ product.img.url }}" alt="" class="pr_img">
+                        {% endif %}
+                    </a>
+                    <div class="product_info">
+                        <p class="pr_price title">{{ product.pr_price }} P</p>
+                        <a href="{% url 'catalogue:product' product.id %}">
+                            <p class="pr_name subtitle">{{ product.pr_name }}</p>
+                        </a>
+                        <button onclick="add_to_basket({{ product.id }})"
+                                class="primary_button"
+                                id="pr_{{ product.id }}"
+                                style="margin: 8px 0 24px;">
+                            В корзину
+                        </button>
+                        <div class="flex absent" id="pr_2_{{ product.id }}" style="	margin: 8px 0 24px;">
+                            <div class="flex align-items-center space-between change_amount">
+                                <button class="add_button" onclick="subtract_pr({{ product.id }})">-</button>
+                                <p class="subtitle" style="font-weight: 700" id="amount{{ product.id }}">1</p>
+                                <button class="add_button" onclick="add_pr({{ product.id }})">+</button>
+                            </div>
+                            <a href="{% url 'basket:basket' %}">
+                                <button class="primary_button">
+    {#                                Второй вариант - иконка стрелки#}
+    {#                                <img style="width: 20px" src="{% static 'catalogue/vectors/arrow.svg' %}" alt="">#}
+                                    К корзине
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                 </div>
+            {% endfor %}
+        {% else %}
+            <p>Сейчас десертов нет, но мы их уже готовим :)</p>
+        {% endif %}
+    </div>
+
+    <script type="text/javascript" src="{% static 'catalogue/script.js' %}"></script>
+
+    {% if session_items %}
+        <script>
+            get_basket({{ session_items }})
+            show_basket()
+        </script>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Товар изменён</title>
+    <link rel="stylesheet" href="{% static 'catalogue/style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="flex space-between caption align-items-center" id="hdr">
+		<a href="{% url 'catalogue:index' %}" id="logo" >Сладости и десерты</a>
+		<nav class="flex space-between" style="margin-right: 60px;">
+			<a href="{% url 'basket:basket' %}" class="navLink">Корзина</a>
+			<a href="{% url 'userProfile:userProfile' %}" class="navLink">Личный кабинет</a>
+			{% if user.is_authenticated %} <p> {{ user.first_name }} {{ user.last_name }} </p>
+            {% else %} <a href="{% url 'login' %}" class="navLink">Войти</a>
+            {% endif %}
+		</nav>
+	</header>
+
+    <div style="margin: 40px 0 0 60px">
+        <h1 class="title">Товар изменён</h1>
+        <div class="flex">
+            {% if product.img %}
+                <img src="{{ product.img.url }}" alt="" style="width: 20%">
+            {% endif %}
+            <div style="margin-left: 10px;">
+                <p class="subtitle">Название: {{ product.pr_name }}</p>
+                <p>Описание: {{ product.desc }}</p>
+                <p>Состав: {{ product.ingreds }}</p>
+                <p>Затраты: {{ product.pr_cost }} Руб.</p>
+                <p>Цена: {{ product.pr_price }} Руб.</p>
+                <p>Количество на складе: {{ product.pr_left }} Шт.</p>
+                <a href="{% url 'userProfile:modify_product' product.id %}"><button style="margin: 10px 4px 0 0" class="primary_button">Изменить этот товар</button></a>
+                <a href="{% url 'userProfile:change_product' %}"><button style="background-color: #ffb229" class="primary_button">Изменить другой товар</button></a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

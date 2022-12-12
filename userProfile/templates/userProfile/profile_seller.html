@@ -1,0 +1,48 @@
+{% load i18n %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Личный кабинет</title>
+    <link rel="stylesheet" href="{% static 'catalogue/style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="flex space-between caption align-items-center" id="hdr">
+		<a href="{% url 'catalogue:index' %}" id="logo" >Сладости и десерты</a>
+		<nav class="flex space-between" style="margin-right: 60px;">
+			<a href="{% url 'basket:basket' %}" class="navLink">Корзина</a>
+			<a href="{% url 'userProfile:userProfile' %}" class="navLink">Личный кабинет</a>
+			{% if user.is_authenticated %} <p> {{ user.first_name }} {{ user.last_name }} </p>
+            {% else %} <a href="{% url 'login' %}" class="navLink">Войти</a>
+            {% endif %}
+		</nav>
+	</header>
+    <div style="margin-left: 40px">
+        <h1 class="headline">Личный кабинет</h1>
+            <div class="flex">
+                <div style="width: 50%">
+                    <p class="title">Список операций</p>
+                    <div style="margin: 8px 0 10px">
+                        <a href="{% url 'userProfile:new_product' %}"><button>Добавить товар</button></a>
+                        <a href="{% url 'userProfile:change_product' %}"><button>Удалить/изменить товар</button></a>
+                        <a href="{% url 'userProfile:change_status' %}"><button>Изменить статус заказа</button></a>
+                    </div>
+                    {% language 'ru' %}
+                        <p style="margin: 4px 0 16px">Сегодня {{ date }}</p>
+                    {% endlanguage %}
+                </div>
+                <div style="width: 50%">
+                    <p class="title">Данные продавца</p>
+                    <p>Имя: {{ user.first_name }}</p>
+                    <p>Фамилия: {{ user.last_name }}</p>
+                    <p>Почта: {{ user.email }}</p>
+                    <a href="{% url 'logout' %}" style="text-decoration: underline">Выйти</a>
+                </div>
+            </div>
+    </div>
+</body>
+</html>

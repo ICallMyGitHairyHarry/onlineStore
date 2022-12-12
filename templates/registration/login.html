@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Авторизация</title>
+    <link rel="stylesheet" href="{% static 'catalogue/style.css' %}">
+</head>
+<body>
+{#{% if form.errors %}#}
+{#<p>Your username and password didn't match. Please try again.</p>#}
+{#{% endif %}#}
+
+{#{% if next %}#}
+{#    {% if user.is_authenticated %}#}
+{#    <p>Your account doesn't have access to this page. To proceed,#}
+{#    please log in with an account that has access.</p>#}
+{#    {% else %}#}
+{#    <p>Please login to see this page.</p>#}
+{#    {% endif %}#}
+{#{% endif %}#}
+    <header class="flex space-between caption align-items-center" id="hdr">
+		<a href="{% url 'catalogue:index' %}" id="logo" >Сладости и десерты</a>
+		<nav class="flex space-between" style="margin-right: 60px;">
+			<a href="{% url 'basket:basket' %}" class="navLink">Корзина</a>
+			<a href="{% url 'userProfile:userProfile' %}" class="navLink">Личный кабинет</a>
+			{% if user.is_authenticated %} <p> {{ user.first_name }} {{ user.last_name }} </p>
+            {% else %} <a href="{% url 'login' %}" class="navLink">Войти</a>
+            {% endif %}
+		</nav>
+	</header>
+    {% if user.is_authenticated %}
+        Вы уже авторизованы
+    {% else %}
+    <form method="post" action="{% url 'registration:logging' %}" style="margin-top: 20px">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <td><label>Логин (email):</label></td>
+                <td>{{ form.username }}</td>
+            </tr>
+            <tr>
+                <td><label>Пароль:</label></td>
+                <td>{{ form.password }}</td>
+            </tr>
+        </table>
+
+        <input type="submit" value="Войти">
+        {#<input type="hidden" name="next" value="{{ next }}">#}
+    </form>
+    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+    <p>Нет аккаунта? <a href="{% url 'registration:registration' %}" style="text-decoration: underline">
+        Зарегистрируйтесь!</a></p>
+{% endif %}
+
+</body>
+</html>

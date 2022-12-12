@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Товар добавлен</title>
+    <link rel="stylesheet" href="{% static 'catalogue/style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="flex space-between caption align-items-center" id="hdr">
+		<a href="{% url 'catalogue:index' %}" id="logo" >Сладости и десерты</a>
+		<nav class="flex space-between" style="margin-right: 60px;">
+			<a href="{% url 'basket:basket' %}" class="navLink">Корзина</a>
+			<a href="{% url 'userProfile:userProfile' %}" class="navLink">Личный кабинет</a>
+			{% if user.is_authenticated %} <p> {{ user.first_name }} {{ user.last_name }} </p>
+            {% else %} <a href="{% url 'login' %}" class="navLink">Войти</a>
+            {% endif %}
+		</nav>
+	</header>
+
+    <div style="margin: 40px 0 0 60px">
+        <h1 class="title">Товар добавлен</h1>
+        <div class="flex">
+            {% if product.img %}
+            <img src="{{ new_product.img.url }}" alt="" style="width: 20%">
+            {% endif %}
+            <div style="margin-left: 10px;">
+                <p class="subtitle">Название: {{ new_product.pr_name }}</p>
+                <p>Описание: {{ new_product.desc }}</p>
+                <p>Состав: {{ new_product.ingreds }}</p>
+                <p>Затраты: {{ new_product.pr_cost }} Руб.</p>
+                <p>Цена: {{ new_product.pr_price }} Руб.</p>
+                <p>Количество на складе: {{ new_product.pr_left }} Шт.</p>
+                <a href="{% url 'userProfile:new_product' %}"><button style="margin-top: 10px" class="primary_button">Добавить ещё один товар</button></a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

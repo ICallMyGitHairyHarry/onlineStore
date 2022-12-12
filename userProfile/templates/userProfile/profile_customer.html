@@ -1,0 +1,100 @@
+{% load i18n %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Личный кабинет</title>
+    <link rel="stylesheet" href="{% static 'catalogue/style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="flex space-between caption align-items-center" id="hdr">
+		<a href="{% url 'catalogue:index' %}" id="logo" >Сладости и десерты</a>
+		<nav class="flex space-between" style="margin-right: 60px;">
+			<a href="{% url 'basket:basket' %}" class="navLink">Корзина</a>
+			<a href="{% url 'userProfile:userProfile' %}" class="navLink">Личный кабинет</a>
+			{% if user.is_authenticated %} <p> {{ user.first_name }} {{ user.last_name }} </p>
+            {% else %} <a href="{% url 'login' %}" class="navLink">Войти</a>
+            {% endif %}
+		</nav>
+	</header>
+    <div style="margin-left: 40px">
+        <h1 class="headline">Личный кабинет</h1>
+            <div class="flex">
+                <div style="width: 37%">
+                    <p class="title">Заказы</p>
+                    {% if orders %}
+                        {% for order in orders %}
+                            <div class="order">
+                            <p class="subtitle">Номер {{ order.id }}</p>
+                            <span>Состав заказа: </span>
+                            {% for pr_list in order.prod_list_set.all %}
+                                <span>{{ pr_list.product }} {{ pr_list.pr_amount }}шт. </span>
+                            {% endfor %}
+{#                            {% for pr_list in order.prod_list_set.all %}#}
+{#                                <div class="product flex" style="width: 55%">#}
+{#                                    <a href="{% url 'catalogue:product' pr_list.product.id %}">#}
+{#                                        <img src="{{ pr_list.product.img.url }}" alt="" class="pr_img">#}
+{#                                    </a>#}
+{#                                    <div class="product_info">#}
+{#                                        <p class="pr_price title">{{ pr_list.product.pr_price }} P</p>#}
+{#                                        <a href="{% url 'catalogue:product' pr_list.product.id %}">#}
+{#                                            <p class="pr_name subtitle">{{ pr_list.product.pr_name }}</p>#}
+{#                                        </a>#}
+{#                                        <p class="subtitle" style="font-weight: 700">{{ pr_list.pr_amount }} шт.</p>#}
+{#                                    </div>#}
+{#                                 </div>#}
+{#                            {% endfor %}#}
+                            {% language 'ru' %}
+                                <p>Дата оформления: {{ order.cr_date }}</p>
+                            {% endlanguage %}
+                            {% if order.pay_date %}
+                                {% language 'ru' %}
+                                    <p>Дата оплаты: {{ order.pay_date }}</p>
+                                {% endlanguage %}
+                            {% endif %}
+                            <p>Стоимость: {{ order.full_pr }} P</p>
+                            </div>
+                        {% endfor %}
+                        <p class="subtitle" style="margin: 8px 0">Стоимость покупок: {{ overall_cost }} руб.</p>
+                    {% elif search_failed %}
+                        <p class="subtitle">Заказов в выбранные даты не найдено</p>
+                    {% else %}
+                        <p class="subtitle">Вы пока не сделали ни одного заказа</p>
+                    {% endif %}
+                </div>
+                {% if orders or search_failed %}
+                <div style="width: 27%;">
+                    <p class="title">Фильтр по дате</p>
+                    {% language 'ru' %}
+                        <p style="margin: 4px 0 16px">Сегодня {{ date }}</p>
+                    {% endlanguage %}
+                    <p style="margin-bottom: 8px">Искать заказы</p>
+                    <form action="{% url 'userProfile:userProfile' %}" method="post">
+                        {% csrf_token %}
+                        <label for="first_date">C</label>
+                        <input type="date" id="first_date" value="{{ start_date }}" name="first_date" size="20" required>
+                        <label for="last_date">по</label>
+                        <input type="date" id="last_date" value="{{ end_date }}" name="last_date" size="20" required>
+                        <input type="submit" value="Найти заказы" class="primary_button">
+                    </form>
+                </div>
+                {% endif %}
+                <div style="width: 33%">
+                    <p class="title">Данные покупателя</p>
+                    <p>Имя: {{ user.first_name }}</p>
+                    <p>Фамилия: {{ user.last_name }}</p>
+                    <p>Почта: {{ user.email }}</p>
+                    <p>Телефон: {{ user.customer.phone }}</p>
+                    <p>Адрес: {{ user.customer.district }} район, улица {{ user.customer.street }}, дом {{ user.customer.house }},
+                        корпус {{ user.customer.corp }}, кв.{{ user.customer.flat }}, {{ user.customer.p_index }} </p>
+                    <a href="{% url 'logout' %}" style="text-decoration: underline">Выйти</a>
+                </div>
+            </div>
+
+    </div>
+</body>
+</html>

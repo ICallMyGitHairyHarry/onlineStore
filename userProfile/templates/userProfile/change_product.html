@@ -1,0 +1,64 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Изменить/удалить товар</title>
+
+	<link rel="stylesheet" href="{% static 'catalogue/style.css' %}">
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="flex space-between caption align-items-center" id="hdr">
+		<a href="{% url 'catalogue:index' %}" id="logo" >Сладости и десерты</a>
+		<nav class="flex space-between" style="margin-right: 60px;">
+			<a href="{% url 'basket:basket' %}" class="navLink">Корзина</a>
+			<a href="{% url 'userProfile:userProfile' %}" class="navLink">Личный кабинет</a>
+			{% if user.is_authenticated %} <p> {{ user.first_name }} {{ user.last_name }} </p>
+            {% else %} <a href="{% url 'login' %}" class="navLink">Войти</a>
+            {% endif %}
+		</nav>
+	</header>
+    <h1 class="headline" style="margin-left: 100px">Список товаров</h1>
+        <div class="flex column" style="margin-left: 100px; margin-top: 20px; gap: 20px;">
+            {% if products_list %}
+                {% for product in products_list %}
+                    <div class="product flex" style="width: 55%">
+                        <a href="{% url 'catalogue:product' product.id %}">
+                            {% if product.img %}
+                            <img style="width: 200px;" src="{{ product.img.url }}" alt="" class="pr_img">
+                            {% endif %}
+                        </a>
+                        <div class="product_info">
+                            <p class="pr_price title">{{ product.pr_name }}</p>
+                            <a href="{% url 'catalogue:product' product.id %}">
+                                <p class="pr_name subtitle">{{ product.pr_price }} P</p>
+                            </a>
+                            <div>
+                                <a href="{% url 'userProfile:modify_product' product.id %}">
+                                    <button style="margin: 10px 0; background-color: #ffb229" class="primary_button">Изменить товар</button>
+                                </a> <br>
+                                <button class="primary_button" onclick="confirm_delete({{ product.id }})">Удалить товар</button>
+                            </div>
+                        </div>
+                     </div>
+                {% endfor %}
+        </div>
+            {% else %}
+                <p>В базе данных нет ни одного продукта</p>
+            {% endif %}
+
+    <script>
+        function confirm_delete(pr_id) {
+            if (confirm('Вы уверены, что хотите удалить продукт из базы данных?')) {
+                document.location.href = `/profile/delete_product/${pr_id}`
+                alert('Продукт был удален.')
+            }
+        }
+    </script>
+</body>
+</html>

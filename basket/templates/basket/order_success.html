@@ -1,0 +1,46 @@
+{% load i18n %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Заказ оформлен</title>
+
+	<link rel="stylesheet" href="{% static 'catalogue/style.css' %}">
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="flex space-between caption align-items-center" id="hdr">
+		<a href="{% url 'catalogue:index' %}" id="logo" >Сладости и десерты</a>
+		<nav class="flex space-between" style="margin-right: 60px;">
+			<a href="{% url 'basket:basket' %}" class="navLink">Корзина</a>
+			<a href="{% url 'userProfile:userProfile' %}" class="navLink">Личный кабинет</a>
+			{% if user.is_authenticated %} <p> {{ user.first_name }} {{ user.last_name }} </p>
+            {% else %} <a href="{% url 'login' %}" class="navLink">Войти</a>
+            {% endif %}
+		</nav>
+	</header>
+
+    <h1 class="headline" style="margin-left: 100px">Заказ оформлен</h1>
+
+    <div style="margin-left: 100px">
+        <p>Номер заказа: {{ order.id }}</p>
+        {% language 'ru' %}
+            <p>Дата оформления {{ order.cr_date }}</p>
+        {% endlanguage %}
+        <p>Покупатель: {{ order.customer.user.first_name }} {{ order.customer.user.last_name }}</p>
+        <p>Продавец: {{ order.seller.user.first_name }} {{ order.seller.user.last_name }}</p>
+        <p>Стоимость: {{ order.full_pr }} P</p>
+        <p>Состав заказа: </p>
+        {% for pr_list in order.prod_list_set.all %}
+            <span>{{ pr_list.product }} {{ pr_list.pr_amount }}шт. </span>
+        {% endfor %}
+    </div>
+
+
+</body>
+</html>

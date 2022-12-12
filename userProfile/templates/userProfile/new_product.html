@@ -1,0 +1,63 @@
+{% load i18n %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить товар</title>
+    <link rel="stylesheet" href="{% static 'catalogue/style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="flex space-between caption align-items-center" id="hdr">
+		<a href="{% url 'catalogue:index' %}" id="logo" >Сладости и десерты</a>
+		<nav class="flex space-between" style="margin-right: 60px;">
+			<a href="{% url 'basket:basket' %}" class="navLink">Корзина</a>
+			<a href="{% url 'userProfile:userProfile' %}" class="navLink">Личный кабинет</a>
+			{% if user.is_authenticated %} <p> {{ user.first_name }} {{ user.last_name }} </p>
+            {% else %} <a href="{% url 'login' %}" class="navLink">Войти</a>
+            {% endif %}
+		</nav>
+	</header>
+
+    <div style="margin: 40px 0 0 60px">
+        <h1 class="title">Новый товар</h1>
+        <form action="{% url 'userProfile:new_product' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+{#        форма через html#}
+{#            <label for="prd_name">Название</label><br>#}
+{#            <input type="text" maxlength="50" name="prd_name" id="prd_name" required onchange = "correct_field('prd_name')"><br>#}
+{#            <label for="prd_desc">Описание</label><br>#}
+{#            <textarea cols="50" maxlength="1000" name="prd_desc" id="prd_desc" onchange = "correct_field('prd_desc')"></textarea><br>#}
+{#            <label for="prd_ingreds">Состав</label><br>#}
+{#            <textarea cols="50" maxlength="1000" name="prd_ingreds" id="prd_ingreds" required onchange = "correct_field('prd_ingreds')"></textarea><br>#}
+{#            <label for="prd_img">Изображение</label>#}
+{#            <input type="file" accept="image/jpeg" name="prd_img" id="prd_img"><br>#}
+{#            <label for="prd_cost">Затраты</label><br>#}
+{#            <input type="number" name="prd_cost" id="prd_cost" required><br>#}
+{#            <label for="prd_price">Цена</label><br>#}
+{#            <input type="number" name="prd_price" id="prd_price" required><br>#}
+{#            <label for="prd_left">Количество на складе</label><br>#}
+{#            <input type="number" name="prd_left" id="prd_left" required><br>#}
+{#            <input type="submit" value="Добавить товар" class="primary_button" style="margin-top: 5px">#}
+
+{#        форма через класс django#}
+            {% for field in form %}
+                <div>
+                    {% language 'ru' %}
+                        {{ field.errors }}
+                        {{ field.label }}<br> {{ field }}
+                    {% endlanguage %}
+                </div>
+            {% endfor %}
+            <input type="submit" value="Добавить товар" class="primary_button" style="margin-top: 5px">
+        </form>
+    </div>
+
+    <script type="text/javascript" src="{% static 'userProfile/script.js' %}"></script>
+</body>
+</html>

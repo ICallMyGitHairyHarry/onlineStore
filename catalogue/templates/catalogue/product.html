@@ -1,0 +1,70 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product.pr_name }}</title>
+	<link rel="stylesheet" href="{% static 'catalogue/style.css' %}">
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="flex space-between caption align-items-center" id="hdr">
+		<a href="{% url 'catalogue:index' %}" id="logo" >Сладости и десерты</a>
+		<nav class="flex space-between" style="margin-right: 60px;">
+			<a href="{% url 'basket:basket' %}" class="navLink">Корзина</a>
+			<a href="{% url 'userProfile:userProfile' %}" class="navLink">Личный кабинет</a>
+			{% if user.is_authenticated %} <p> {{ user.first_name }} {{ user.last_name }} </p>
+            {% else %} <a href="{% url 'login' %}" class="navLink">Войти</a>
+            {% endif %}
+		</nav>
+	</header>
+
+    <div class="flex justify-content" style="margin-top: 42px">
+        {% if product.img %}
+        <img src="{{ product.img.url }}" alt="" class="">
+        {% endif %}
+        <div style="width: 50%">
+            <a href=""><p class="pr_name headline">{{ product.pr_name }}</p></a>
+            <p class="usual_text">{{ product.desc }}</p>
+            <br>
+            <p class="usual_text">Состав: {{ product.ingreds }}</p>
+            <p class="pr_price title">{{ product.pr_price }} P</p>
+{#            альтернативный вариант - форма#}
+{#            <form action="{% url 'basket:basket' product %}">#}
+{#                <label for="amount">Количество</label>#}
+{#                <input type="number" value="0" name="pr_amount" id="amount">#}
+{#                <input type="submit" value="В корзину">#}
+{#            </form>#}
+            <button onclick="add_new_amount({{ product.id }})"
+                    class="primary_button"
+                    id="pr_{{ product.id }}"
+                    style="margin: 8px 0 24px;">
+                В корзину
+            </button>
+            <div class="flex absent" id="pr_2_{{ product.id }}" style="	margin: 8px 0 24px;">
+                <div class="flex align-items-center space-between change_amount">
+                    <button class="add_button" onclick="subtract_amount({{ product.id }})">-</button>
+                        <p class="subtitle" style="font-weight: 700" id="amount{{ product.id }}">1</p>
+                    <button class="add_button" onclick="add_amount({{ product.id }})">+</button>
+                </div>
+                <a href="{% url 'basket:basket' %}">
+                    <button class="primary_button">К корзине</button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="{% static 'catalogue/script.js' %}"></script>
+
+    {% if product_amount %}
+        <script>
+            get_amount({{ product_amount }})
+            show_amount({{ product.id }})
+        </script>
+    {% endif %}
+</body>
+</html>

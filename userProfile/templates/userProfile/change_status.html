@@ -1,0 +1,91 @@
+{% load i18n %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Изменить/удалить товар</title>
+
+	<link rel="stylesheet" href="{% static 'catalogue/style.css' %}">
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="flex space-between caption align-items-center" id="hdr">
+		<a href="{% url 'catalogue:index' %}" id="logo" >Сладости и десерты</a>
+		<nav class="flex space-between" style="margin-right: 60px;">
+			<a href="{% url 'basket:basket' %}" class="navLink">Корзина</a>
+			<a href="{% url 'userProfile:userProfile' %}" class="navLink">Личный кабинет</a>
+			{% if user.is_authenticated %} <p> {{ user.first_name }} {{ user.last_name }} </p>
+            {% else %} <a href="{% url 'login' %}" class="navLink">Войти</a>
+            {% endif %}
+		</nav>
+	</header>
+
+    <h1 class="headline" style="margin-left: 100px">Список заказов</h1>
+    <div class="flex">
+        <div class="flex column" style="margin-left: 100px; margin-top: 20px; gap: 5px; width: 32%;">
+            {% if unpaid_orders %}
+                <p class="title">Неоплаченные заказы</p>
+                {% for order in unpaid_orders %}
+                    <div class="order" style="padding: 0 4px 4px">
+                        <p class="subtitle">Номер {{ order.id }}</p>
+                        <span>Состав заказа: </span>
+                        {% for pr_list in order.prod_list_set.all %}
+                            <span>{{ pr_list.product }} {{ pr_list.pr_amount }}шт. </span>
+                        {% endfor %}
+                        {% language 'ru' %}
+                            <p>Дата оформления: {{ order.cr_date }}</p>
+                        {% endlanguage %}
+                        <p>Стоимость: {{ order.full_pr }} P</p>
+                        <button style="margin-top: 4px; background-color: #c62828; color: white" class="primary_button" onclick="confirm_status_paid({{ order.id }})">Изменить статус на Оплачен</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+{#        <div class="flex column" style="margin-left: 100px; margin-top: 20px; gap: 5px; width: 32%;">#}
+{#            {% if paid_orders %}#}
+{#                <p class="title">Оплаченные заказы</p>#}
+{#                {% for order in paid_orders %}#}
+{#                    <div class="order">#}
+{#                        <p class="subtitle">Номер {{ order.id }}</p>#}
+{#                        <span>Состав заказа: </span>#}
+{#                        {% for pr_list in order.prod_list_set.all %}#}
+{#                            <span>{{ pr_list.product }} {{ pr_list.pr_amount }}шт. </span>#}
+{#                        {% endfor %}#}
+{#                        {% language 'ru' %}#}
+{#                            <p>Дата оформления: {{ order.cr_date }}</p>#}
+{#                            <p>Дата оплаты: {{ order.pay_date }}</p>#}
+{#                        {% endlanguage %}#}
+{#                        <p>Стоимость: {{ order.full_pr }} P</p>#}
+{#                        <button style="margin-top: 4px" onclick="confirm_status_unpaid({{ order.id }})">Изменить статус на Оформлен</button>#}
+{#                    </div>#}
+{#                {% endfor %}#}
+{#            {% endif %}#}
+{#        </div>#}
+    </div>
+{#    {% if paid_orders.count == 0 and unpaid_orders.count == 0 %}#}
+    {% if paid_orders.count == 0 %}
+        <p style="margin-left: 100px;">Заказов для данного продавца не найдено</p>
+    {% endif %}
+
+    <script>
+        function confirm_status_paid(order_id) {
+            if (confirm("Вы уверены, что хотите перевести заказ в статус 'оплачен'?")) {
+                document.location.href = `/profile/change_order_status_paid/${order_id}`
+                alert("Статус заказа изменён")
+            }
+        }
+        {#function confirm_status_unpaid(order_id) {#}
+        {#    if (confirm("Вы уверены, что хотите перевести заказ в статус 'оформлен' (не оплачен)?")) {#}
+        {#        document.location.href = `/profile/change_order_status_unpaid/${order_id}`#}
+        {#        alert("Статус заказа изменён")#}
+        {#    }#}
+        {#/} #}
+    </script>
+
+</body>
+</html>

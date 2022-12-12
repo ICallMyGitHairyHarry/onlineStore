@@ -1,0 +1,124 @@
+{% load i18n %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Личный кабинет</title>
+    <link rel="stylesheet" href="{% static 'catalogue/style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="flex space-between caption align-items-center" id="hdr">
+		<a href="{% url 'catalogue:index' %}" id="logo" >Сладости и десерты</a>
+		<nav class="flex space-between" style="margin-right: 60px;">
+			<a href="{% url 'basket:basket' %}" class="navLink">Корзина</a>
+			<a href="{% url 'userProfile:userProfile' %}" class="navLink">Личный кабинет</a>
+			{% if user.is_authenticated %} <p> {{ user.first_name }} {{ user.last_name }} </p>
+            {% else %} <a href="{% url 'login' %}" class="navLink">Войти</a>
+            {% endif %}
+		</nav>
+	</header>
+    <div style="margin-left: 48px">
+        <h1 class="headline">Личный кабинет</h1>
+            <div class="flex">
+                <div style="width: 31%">
+
+                    <div>
+                        <p class="title">Данные владельца</p>
+                        <p>Имя: {{ user.first_name }}</p>
+                        <p>Фамилия: {{ user.last_name }}</p>
+                        <p>Почта: {{ user.email }}</p>
+                        <a href="{% url 'logout' %}" style="text-decoration: underline">Выйти</a>
+                    </div>
+
+                    <p class="title" style="margin-top: 34px">Прибыль магазина</p>
+                    <p class="subtitle">Фильтр прибыли по дате</p>
+                    {% language 'ru' %}
+                        <p style="margin: 4px 0 16px">Сегодня {{ date }}</p>
+                    {% endlanguage %}
+                    <p style="margin-bottom: 8px">Рассчитать прибыль</p>
+                    <form action="{% url 'userProfile:userProfile' %}" method="post">
+                        {% csrf_token %}
+                        <label for="first_date">C</label>
+                        <input type="date" id="first_date" value="{{ start_date_profit }}" name="first_date_profit" size="20" required>
+                        <label for="last_date">по</label>
+                        <input type="date" id="last_date" value="{{ end_date_profit }}" name="last_date_profit" size="20" required> <br>
+                        <input type="submit" value="Рассчитать прибыль" class="primary_button">
+                    </form>
+                    {% if start_date_profit %}
+                        <p style="margin: 8px 0"> <b>Прибыль магазина в указанном временном диапазоне
+                        составила: {{ profit }} руб.</b></p>
+                    {% endif %}
+
+
+
+                </div>
+
+                <div style="width: 30%;">
+                    <p class="title">Рейтинг товаров</p>
+                    <div class="flex column" style="margin-top:16px; gap: 16px;">
+                        {% if top_products %}
+                            {% for product in top_products %}
+                                <div class="product flex" style="width: 88%">
+                                    <a href="{% url 'catalogue:product' product.id %}">
+                                        {% if product.img %}
+                                            <img style="width: 100px;" src="{{ product.img.url }}" alt="" class="pr_img">
+                                        {% endif %}
+                                    </a>
+                                    <div class="product_info">
+                                        <a href="{% url 'catalogue:product' product.id %}">
+                                            <p class="pr_price subtitle">{{ product.pr_name }}</p>
+                                        </a>
+                                        <p class="pr_name" id="profit{{ product.id }}">Прибыль:</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>За данный промежуток времени не было куплено ни одного товара</p>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+                <div>
+                    <p class="subtitle" style="margin-top:44px;">Фильтр рейтинга по дате</p>
+                    {% language 'ru' %}
+                        <p style="margin: 4px 0 16px">Сегодня {{ date }}</p>
+                    {% endlanguage %}
+                    <p style="margin-bottom: 8px">Составить рейтинг товаров</p>
+                    <form action="{% url 'userProfile:userProfile' %}" method="post">
+                        {% csrf_token %}
+                        <label for="first_date">C</label>
+                        <input type="date" id="first_date" value="{{ start_date_rating }}" name="first_date_rating" size="20" required>
+                        <label for="last_date">по</label>
+                        <input type="date" id="last_date" value="{{ end_date_rating }}" name="last_date_rating" size="20" required> <br>
+                        <input type="submit" value="Составить рейтинг" class="primary_button">
+                    </form>
+                </div>
+
+            </div>
+    </div>
+
+    {% if top_products %}
+        <script>
+            let products_profit = {};
+
+            function get_products_profit(pr_rating) {
+                products_profit = pr_rating;
+            }
+
+            function show_products_profit() {
+                for (let pr in products_profit) {
+                    document.getElementById("profit" + pr).innerText += " " + products_profit[pr] + " Pуб.";
+                }
+            }
+
+            get_products_profit({{ products_rating }});
+            show_products_profit();
+        </script>
+    {% endif %}
+</body>
+</html>
